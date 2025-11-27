@@ -3,17 +3,16 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Model;
 
-class User extends Authenticatable
+class Category extends Model
 {
-    use HasFactory, Notifiable;
+    use HasFactory;
 
     /**
      * Nama tabel di database
      */
-    protected $table = 'bet_user_tbl';
+    protected $table = 'bet_category_tbl';
 
     /**
      * Primary key
@@ -31,7 +30,7 @@ class User extends Authenticatable
     protected $keyType = 'int';
 
     /**
-     * Karena kita memakai createdAt & updatedAt (custom)
+     * Karena kita pakai createdAt & updatedAt custom
      */
     public $timestamps = false;
 
@@ -39,19 +38,12 @@ class User extends Authenticatable
      * Kolom yang boleh diisi mass assignment
      */
     protected $fillable = [
-        'username',
-        'password',
-        'role',
+        'name',
         'isActive',
+        'createdBy',
+        'updatedBy',
         'createdAt',
         'updatedAt',
-    ];
-
-    /**
-     * Kolom yang disembunyikan saat serialize
-     */
-    protected $hidden = [
-        'password',
     ];
 
     /**
@@ -64,10 +56,26 @@ class User extends Authenticatable
     ];
 
     /**
-     * Otomatis hash password saat diset
+     * =========================
+     * RELATION (Optional)
+     * =========================
      */
-    public function setPasswordAttribute($value)
+
+    // Relasi ke tabel expenses
+    public function expenses()
     {
-        $this->attributes['password'] = bcrypt($value);
+        return $this->hasMany(Expense::class, 'categoryId');
+    }
+
+    // Relasi ke user pembuat
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'createdBy');
+    }
+
+    // Relasi ke user pengubah
+    public function updater()
+    {
+        return $this->belongsTo(User::class, 'updatedBy');
     }
 }
