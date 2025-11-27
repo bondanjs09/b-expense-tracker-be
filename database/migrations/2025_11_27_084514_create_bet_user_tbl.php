@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
-        Schema::create('be_user_tbl', function (Blueprint $table) {
+        Schema::create('bet_user_tbl', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('username', 100)->unique();
             $table->text('password');
@@ -20,6 +20,6 @@ return new class extends Migration {
 
     public function down(): void
     {
-        Schema::dropIfExists('be_user_tbl');
+        Schema::dropIfExists('bet_user_tbl');
     }
 };
