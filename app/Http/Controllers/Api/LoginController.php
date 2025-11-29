@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class LoginController extends Controller
 {
@@ -17,12 +18,12 @@ class LoginController extends Controller
             'password' => 'required|string',
         ]);
 
-        // ✅ Cari user berdasarkan username & isActive
+        // ✅ Cari user aktif
         $user = User::where('username', $request->username)
             ->where('isActive', 1)
             ->first();
 
-        // ✅ Jika user tidak ditemukan
+        // ❌ User tidak ditemukan
         if (!$user) {
             return response()->json([
                 'status' => false,
@@ -30,7 +31,7 @@ class LoginController extends Controller
             ], 401);
         }
 
-        // ✅ Cek password (karena disimpan dalam bentuk hash)
+        // ❌ Password salah
         if (!Hash::check($request->password, $user->password)) {
             return response()->json([
                 'status' => false,
@@ -38,15 +39,19 @@ class LoginController extends Controller
             ], 401);
         }
 
-        // ✅ Login berhasil → Return JSON sesuai permintaan
+        // ✅ BUAT TOKEN JWT
+        $token = JWTAuth::fromUser($user);
+
+        // ✅ RESPONSE LOGIN BERHASIL + TOKEN
         return response()->json([
-            'status' => false,
-            'message' => 'Login sukses.',
+            'status' => true,
+            'message' => 'Login sukses',
             'data' => [
                 'id'       => $user->id,
                 'username' => $user->username,
                 'role'     => $user->role,
             ],
+            'token' => $token
         ], 200);
     }
 }
