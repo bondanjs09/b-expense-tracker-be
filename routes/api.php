@@ -3,7 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\LoginController;
-use App\Http\Controllers\Api\SuperAdmin\UserManagementController;
+use App\Http\Controllers\Api\Superadmin\UserManagementController;
 
 
 // Route::get('/user', function (Request $request) {
